@@ -2,6 +2,8 @@ const express = require('express')
 const app = express()
 const path = require('path')
 const mustacheExpress = require('mustache-express');
+// const words = fs.readFileSync("/usr/share/dict/words", "utf-8").toLowerCase().split("\n");
+
 
 app.engine('mustache', mustacheExpress());
 app.set('views', './views')
