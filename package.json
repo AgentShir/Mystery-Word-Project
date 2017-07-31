@@ -8,6 +8,7 @@
   "author": "Shireen Garcia <garciasal@gmail.com>",
   "license": "ISC",
   "dependencies": {
+    "body-parser": "^1.17.2",
     "express": "^4.15.3",
     "mustache-express": "^1.2.5"
   },
