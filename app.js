@@ -3,7 +3,7 @@ const app = express()
 const path = require('path')
 const mustacheExpress = require('mustache-express');
 const bodyParser = require('body-parser');
-
+var session = require('express-session')
 // const words = fs.readFileSync("/usr/share/dict/words", "utf-8").toLowerCase().split("\n");
 
 
@@ -12,6 +12,11 @@ app.set('views', './views')
 app.set('view engine', 'mustache')
 app.use(bodyParser.json());
 app.use(bodyParser.urlencoded({ extended: false }));
+app.use(session({
+  secret: 'keyboard cat',
+  resave: false,
+  saveUninitialized: true
+}))
 
 
 app.use(express.static(path.join(__dirname, 'static')))
@@ -35,12 +40,29 @@ app.get("/", function(req, res, next){
 
 });
 
-// var users = [];
-//
-// app.post('/', function(req, res){
-//   console.log('BODY: ', req.body);
-//   res.render("user", {email:req.body.email, name:req.body.name, year:req.body.year, position:req.body.position, password:req.body.password});
-// });
+app.use(function (req, res, next) {
+  var views = req.session.views
+
+  if (!views) {
+    views = req.session.views = {}
+  }
+
+  // get the url pathname
+  var pathname = parseurl(req).pathname
+
+  // count the views
+  views[pathname] = (views[pathname] || 0) + 1
+
+  next()
+})
+
+app.get('/foo', function (req, res, next) {
+  res.send('you viewed this page ' + req.session.views['/foo'] + ' times')
+})
+
+app.get('/bar', function (req, res, next) {
+  res.send('you viewed this page ' + req.session.views['/bar'] + ' times')
+})
 
 
 app.listen(3000, function(){
